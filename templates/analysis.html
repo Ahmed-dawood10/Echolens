@@ -1,0 +1,342 @@
+{% extends 'base.html' %}
+{% block title %}
+    {{ 'تحليل الفيديو - EchoLens' if lang == 'ar' else 'Video Analysis - EchoLens' }}
+{% endblock %}
+{% block content %}
+    <!-- Hero Section -->
+    <section class="relative h-96 bg-cover bg-center" style="background-image: url('{{ url_for('static', filename='images/hero-bg.jpg') }}');">
+        <div class="absolute inset-0 bg-gradient-to-r from-blue-600 to-blue-400 opacity-70"></div>
+        <div class="relative container mx-auto px-4 h-full flex flex-col justify-center items-center text-center text-white">
+            <h1 class="text-5xl font-bold mb-4 animate-typewriter">
+                {{ 'حلل فيديوهاتك مع EchoLens' if lang == 'ar' else 'Analyze Your Videos with EchoLens' }}
+            </h1>
+            <p class="text-xl mb-6 animate-fade-in">
+                {{ 'اكتشف الرؤى من لقطات المراقبة الخاصة بك في الوقت الحقيقي.' if lang == 'ar' else 'Uncover insights from your surveillance footage in real-time.' }}
+            </p>
+        </div>
+    </section>
+
+    <!-- Upload Section -->
+    <section class="py-16 bg-gray-50 relative">
+        <div class="absolute inset-0 opacity-10" style="background-image: url('{{ url_for('static', filename='images/pattern.png') }}');"></div>
+        <div class="container mx-auto px-4 relative">
+            <!-- Flash Messages -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <div class="mb-6">
+                        {% for category, message in messages %}
+                            <div class="bg-{{ 'red' if category == 'error' else 'green' }}-100 border border-{{ 'red' if category == 'error' else 'green' }}-400 text-{{ 'red' if category == 'error' else 'green' }}-700 px-4 py-3 rounded-lg shadow-md" role="alert">
+                                <span class="block sm:inline">{{ message }}</span>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
+
+            <h2 class="text-4xl font-bold text-center text-gray-800 mb-12 animate-on-scroll">
+                {{ 'ارفع فيديوك' if lang == 'ar' else 'Upload Your Video' }}
+            </h2>
+            <!-- Upload Card -->
+            <div class="max-w-lg mx-auto bg-white rounded-xl shadow-xl p-8 transition-all duration-300 hover:shadow-2xl animate-on-scroll">
+                <div class="flex items-center justify-center mb-6">
+                    <svg class="w-10 h-10 text-blue-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6H16a5 5 0 015 5v1a5 5 0 01-5 5H7z"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l-4 4m0-4l4 4m0 0l4-4m-4 4v-9"></path>
+                    </svg>
+                    <h3 class="text-xl font-semibold text-gray-800">
+                        {{ 'الصيغ المدعومة: MP4، AVI، MOV' if lang == 'ar' else 'Supported Formats: MP4, AVI, MOV' }}
+                    </h3>
+                </div>
+                <div class="mb-6">
+                    <label for="video" class="block text-gray-700 text-sm font-semibold mb-2">
+                        {{ 'اختر الفيديو' if lang == 'ar' else 'Select Video' }}
+                    </label>
+                    <div class="relative">
+                        <input type="file" id="video" accept="video/mp4,video/avi,video/mov"
+                               class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all">
+                        <span class="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6H16a5 5 0 015 5v1a5 5 0 01-5 5H7z"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l-4 4m0-4l4 4m0 0l4-4m-4 4v-9"></path>
+                            </svg>
+                        </span>
+                    </div>
+                </div>
+                <button id="uploadBtn"
+                        class="w-full bg-blue-600 text-white p-3 rounded-lg hover:bg-blue-700 transition-all duration-300 flex items-center justify-center space-x-2">
+                    <span>{{ 'ارفع وحلل' if lang == 'ar' else 'Upload and Analyze' }}</span>
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                </button>
+                <!-- Loading Indicator -->
+                <div id="loading" class="hidden mt-6">
+                    <div class="w-full bg-gray-200 rounded-full h-3">
+                        <div id="progressBar" class="bg-blue-600 h-3 rounded-full transition-all duration-500" style="width: 0%"></div>
+                    </div>
+                    <p class="text-gray-600 text-center mt-3 text-sm">
+                        {{ 'جاري المعالجة... يرجى الانتظار.' if lang == 'ar' else 'Processing... Please wait.' }}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Results Section -->
+    <section class="py-16 bg-gradient-to-b from-gray-100 to-gray-200">
+        <div class="container mx-auto px-4">
+            <h3 class="text-4xl font-bold text-center text-gray-800 mb-12 animate-on-scroll">
+                {{ 'نتائج التحليل' if lang == 'ar' else 'Analysis Results' }}
+            </h3>
+            <!-- Alert Bar -->
+            <div id="alertBar" class="hidden bg-red-600 text-white p-4 rounded-lg shadow-md mb-6 text-center animate-pulse">
+                <div class="flex items-center justify-center space-x-2">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    <span>{{ 'تم اكتشاف حدث غير طبيعي!' if lang == 'ar' else 'Non-normal event detected!' }}</span>
+                </div>
+            </div>
+            <div id="results" class="max-w-3xl mx-auto hidden animate-on-scroll">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Predicted Event and Confidence -->
+                    <div class="bg-gradient-to-r from-blue-500 to-blue-700 text-white p-6 rounded-xl shadow-lg transform hover:scale-105 transition-all duration-300">
+                        <div class="flex items-center space-x-3">
+                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            <div>
+                                <p class="text-sm font-semibold">
+                                    {{ 'الحدث المتوقع' if lang == 'ar' else 'Predicted Event' }}
+                                </p>
+                                <p id="predictedLabel" class="text-lg font-bold capitalize"></p>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-3 mt-4">
+                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
+                            </svg>
+                            <div>
+                                <p class="text-sm font-semibold">
+                                    {{ 'الثقة' if lang == 'ar' else 'Confidence' }}
+                                </p>
+                                <p id="confidence" class="text-lg font-bold"></p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Event Summary -->
+                    <div class="bg-white p-6 rounded-xl shadow-lg transform hover:scale-105 transition-all duration-300">
+                        <div class="flex items-center space-x-3 mb-4">
+                            <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                            </svg>
+                            <h4 class="text-lg font-semibold text-gray-800">
+                                {{ 'ملخص الحدث' if lang == 'ar' else 'Event Summary' }}
+                            </h4>
+                        </div>
+                        <p id="summary" class="text-gray-600"></p>
+                    </div>
+                </div>
+                <!-- Detected Events -->
+                <div class="mt-6 bg-white p-6 rounded-xl shadow-lg">
+                    <div class="flex items-center space-x-3 mb-4">
+                        <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        <h4 class="text-lg font-semibold text-gray-800">
+                            {{ 'الأحداث المكتشفة' if lang == 'ar' else 'Detected Events' }}
+                        </h4>
+                    </div>
+                    <ul id="events" class="space-y-3"></ul>
+                </div>
+                <!-- Download Buttons -->
+                <div class="mt-6 text-center space-y-4">
+                    <a id="downloadBtn" href="{{ url_for('main.download_raw_analysis') }}"
+                       class="bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transform hover:scale-105 transition-all duration-300">
+                        {{ 'تنزيل فيديو الإطارات الرئيسية' if lang == 'ar' else 'Download Raw Keyframes Video' }}
+                    </a>
+                    <a id="downloadReportBtn" href="{{ url_for('main.download_report', source='analysis') }}"
+                       class="block bg-green-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-green-700 transform hover:scale-105 transition-all duration-300">
+                        {{ 'تنزيل التقرير كـ PDF' if lang == 'ar' else 'Download Report as PDF' }}
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="py-16 bg-blue-600 text-white text-center">
+        <div class="container mx-auto px-4">
+            <h2 class="text-4xl font-bold mb-4 animate-on-scroll">
+                {{ 'هل تريد معرفة المزيد؟' if lang == 'ar' else 'Want to Learn More?' }}
+            </h2>
+            <p class="text-lg mb-6 animate-on-scroll">
+                {{ 'اكتشف جميع الميزات التي يقدمها EchoLens.' if lang == 'ar' else 'Discover all the features EchoLens has to offer.' }}
+            </p>
+            <a href="{{ url_for('main.features', lang=lang) }}" class="bg-white text-blue-600 px-6 py-3 rounded-lg font-semibold hover:bg-blue-100 transform hover:scale-105 transition-all duration-300 animate-on-scroll">
+                {{ 'استكشف الميزات' if lang == 'ar' else 'Explore Features' }}
+            </a>
+        </div>
+    </section>
+
+    <script>
+        document.getElementById('uploadBtn').addEventListener('click', async () => {
+            const videoInput = document.getElementById('video');
+            const lang = '{{ lang }}'; // Get the language from the template
+            const alertBar = document.getElementById('alertBar');
+            const alertAudio = new Audio('{{ url_for('static', filename='audio/alert.mp3') }}');
+            const webhookUrl = 'https://alike-testing-progressive-enabling.trycloudflare.com/webhook-test/a8a33bc7-7e97-49ec-a726-a1eb337d7a3f';
+
+            if (!videoInput.files.length) {
+                alert(lang === 'ar' ? 'يرجى اختيار ملف فيديو.' : 'Please select a video file.');
+                return;
+            }
+
+            const file = videoInput.files[0];
+            const formData = new FormData();
+            formData.append('video', file);
+
+            document.getElementById('loading').classList.remove('hidden');
+            document.getElementById('results').classList.add('hidden');
+            alertBar.classList.add('hidden'); // Hide alert bar initially
+
+            // Simulate progress bar
+            const progressBar = document.getElementById('progressBar');
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += 10;
+                progressBar.style.width = `${progress}%`;
+                if (progress >= 90) clearInterval(interval);
+            }, 1000);
+
+            try {
+                const response = await fetch(`/upload?lang=${lang}`, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                clearInterval(interval);
+                progressBar.style.width = '100%';
+
+                const result = await response.json();
+                console.log('Full analysis result:', result); // Log full result for debugging
+                if (response.ok) {
+                    // Display Predicted Event and Confidence
+                    document.getElementById('predictedLabel').textContent = result.predicted_label || (lang === 'ar' ? 'غير معروف' : 'Unknown');
+                    document.getElementById('confidence').textContent = (result.confidence || 0).toFixed(2) + '%';
+
+                    // Check if result is valid
+                    if (!result.predicted_label || !result.summary) {
+                        console.warn('Invalid result data:', result);
+                        alert(lang === 'ar' ? 'بيانات التحليل غير كاملة.' : 'Analysis data is incomplete.');
+                        return;
+                    }
+
+                    // Show alert bar and play audio if predicted_label is not 'normal'
+                    if (result.predicted_label && result.predicted_label.toLowerCase() !== 'normal') {
+                        console.log('Non-normal event detected, triggering alert and webhook:', result.predicted_label);
+                        alertBar.classList.remove('hidden');
+                        alertAudio.play().catch(error => {
+                            console.error('Error playing alert audio:', error);
+                            alert(`${lang === 'ar' ? 'خطأ في تشغيل صوت التنبيه: ' : 'Error playing alert audio: '}${error.message}`);
+                        });
+
+                        // Fetch the PDF as binary data with error handling
+                        let pdfBlob, pdfArrayBuffer, pdfBase64;
+                        try {
+                            const pdfResponse = await fetch('/download_report/analysis', { // Change to match the route
+                                method: 'GET',
+                                headers: {
+                                    'Accept': 'application/pdf'
+                                }
+                            });
+                            if (!pdfResponse.ok) {
+                                throw new Error(`Failed to fetch PDF: ${pdfResponse.status} ${pdfResponse.statusText}`);
+                            }
+                            pdfBlob = await pdfResponse.blob();
+                            pdfArrayBuffer = await pdfBlob.arrayBuffer();
+                            pdfBase64 = btoa(String.fromCharCode(...new Uint8Array(pdfArrayBuffer)));
+                        } catch (pdfError) {
+                            console.error('PDF fetch error:', pdfError);
+                            alert(`${lang === 'ar' ? 'خطأ في جلب ملف الـ PDF: ' : 'Error fetching PDF: '}${pdfError.message}`);
+                            pdfBase64 = ''; // Set empty if failed
+                        }
+
+                        // Prepare webhook payload with predicted_label, summary, and PDF as base64
+                        const webhookPayload = {
+                            predicted_label: result.predicted_label,
+                            summary: result.summary,
+                            pdf_data: pdfBase64,
+                            pdf_filename: 'analysis_report.pdf'
+                        };
+
+                        // Send to webhook with detailed error handling
+                        try {
+                            console.log('Attempting webhook request...');
+                            const webhookResponse = await fetch(webhookUrl, {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify(webhookPayload)
+                            });
+                            console.log('Webhook response status:', webhookResponse.status);
+                            if (!webhookResponse.ok) {
+                                const webhookError = await webhookResponse.json();
+                                console.error('Webhook error:', webhookError);
+                                alert(`${lang === 'ar' ? 'خطأ في إرسال البيانات إلى الـ Webhook: ' : 'Error sending data to webhook: '}${webhookError.message || 'Unknown error'}`);
+                            } else {
+                                console.log('Webhook sent successfully');
+                            }
+                        } catch (webhookError) {
+                            console.error('Error in webhook request:', webhookError);
+                            alert(`${lang === 'ar' ? 'خطأ في معالجة الـ Webhook: ' : 'Error processing webhook: '}${webhookError.message}`);
+                        }
+                    } else {
+                        console.log('Normal event detected, skipping webhook. Label:', result.predicted_label);
+                    }
+
+                    // Display Event Summary
+                    document.getElementById('summary').textContent = result.summary || (lang === 'ar' ? 'لا تتوفر معلومات كافية' : 'No sufficient information');
+
+                    // Display Detected Events
+                    const eventsList = document.getElementById('events');
+                    eventsList.innerHTML = '';
+                    if (result.events && result.events.length > 0) {
+                        result.events.forEach((event, index) => {
+                            const li = document.createElement('li');
+                            li.className = 'flex items-center space-x-2 text-gray-600';
+                            li.innerHTML = `
+                                <span class="inline-flex items-center justify-center w-6 h-6 bg-blue-100 text-blue-800 rounded-full">
+                                    ${index + 1}
+                                </span>
+                                <span>
+                                    ${lang === 'ar' ? 'البداية' : 'Start'}: <span class="font-medium">${event.start_time.toFixed(2)}s</span> (Frame ${event.start_frame}) - 
+                                    ${lang === 'ar' ? 'النهاية' : 'End'}: <span class="font-medium">${event.end_time.toFixed(2)}s</span> (Frame ${event.end_frame})
+                                </span>
+                            `;
+                            eventsList.appendChild(li);
+                        });
+                    } else {
+                        const li = document.createElement('li');
+                        li.className = 'text-gray-600 italic';
+                        li.textContent = lang === 'ar' ? 'لم يتم اكتشاف أحداث مهمة' : 'No significant events detected';
+                        eventsList.appendChild(li);
+                    }
+
+                    // Show results with animation
+                    document.getElementById('results').classList.remove('hidden');
+                } else {
+                    alert(`${lang === 'ar' ? 'خطأ: ' : 'Error: '}${result.error}`);
+                }
+            } catch (error) {
+                console.error('Upload error:', error);
+                alert(`${lang === 'ar' ? 'حدث خطأ: ' : 'An error occurred: '}${error.message}`);
+            } finally {
+                document.getElementById('loading').classList.add('hidden');
+                progressBar.style.width = '0%';
+            }
+        });
+    </script>
+    <script src="/static/js/scripts.js"></script>
+{% endblock %}
