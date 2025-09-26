@@ -24,3 +24,13 @@ It integrates with **n8n workflows** to send automated alerts via Gmail and log 
 ├── workflow(alert+storing).json # n8n workflow file
 ├── yolov12n.pt                  # Pre-trained YOLO model
 └── README.md                    # Documentation
+
+
+## ⚙️ Installation  
+
+### 1️⃣ Clone the Repository  
+```bash
+git clone https://github.com/Ahmed-dawood10/Echolens.git
+cd Echolens
+
+
