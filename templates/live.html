@@ -229,7 +229,7 @@
 </section>
 
 <script>
-    // إدارة حالة الكاميرا
+    // camera status management
     const cameraManager = {
         recording: false,
         mediaStream: null,
@@ -240,7 +240,7 @@
     const lang = '{{ lang }}'; // Get the language from the template
     const alertAudio = new Audio('{{ url_for('static', filename='audio/alert.mp3') }}');
 
-    // بدء التسجيل
+    // Start recording
     document.getElementById('startBtn').addEventListener('click', async function() {
         try {
             const stream = await navigator.mediaDevices.getUserMedia({ 
@@ -259,8 +259,8 @@
             videoElement.srcObject = stream;
             videoElement.classList.remove('hidden');
             document.getElementById('cameraPlaceholder').classList.add('hidden');
-            
-            // إعداد MediaRecorder
+
+            // Initialize MediaRecorder
             const options = { mimeType: 'video/webm;codecs=vp9' };
             cameraManager.mediaRecorder = new MediaRecorder(stream, options);
             
@@ -293,7 +293,7 @@
         }
     });
 
-    // إيقاف التسجيل
+    // Stop recording
     document.getElementById('stopBtn').addEventListener('click', function() {
         if (cameraManager.mediaRecorder && cameraManager.mediaRecorder.state !== 'inactive') {
             cameraManager.mediaRecorder.stop();
@@ -313,7 +313,7 @@
         document.getElementById('analyzeBtn').classList.remove('hidden');
     });
 
-    // تحليل الفيديو من الكاميرا
+    // Analyze video from camera
     document.getElementById('analyzeBtn').addEventListener('click', async function() {
         console.log('Analyze button clicked, chunks:', cameraManager.recordedChunks.length);
         if (cameraManager.recordedChunks.length === 0) {
@@ -360,7 +360,7 @@
         }
     });
 
-    // تحليل RTSP Stream
+    // Analyze RTSP Stream
     document.getElementById('analyzeRtspBtn').addEventListener('click', async function() {
         const rtspUrl = document.getElementById('rtspUrl').value;
         if (!rtspUrl) {
@@ -372,7 +372,7 @@
         const analysisProgress = document.getElementById('analysisProgress');
         loadingModal.classList.remove('hidden');
 
-        // محاكاة شريط التقدم
+        // Simulate progress bar
         simulateAnalysisProgress(analysisProgress);
 
         try {
@@ -405,13 +405,13 @@
         }
     });
 
-    // عرض النتائج
+    // Display results
     function displayResults(data) {
         const resultsSection = document.getElementById('resultsSection');
         const alertBar = document.getElementById('alertBar');
         resultsSection.classList.remove('hidden');
-        
-        // تحديث التنبؤ
+
+        // Update prediction
         document.getElementById('predictionResult').textContent = data.predicted_label || (lang === 'ar' ? 'غير معروف' : 'Unknown');
         const confidence = data.confidence || 0; // Fallback to 0 if confidence is not provided
         document.getElementById('confidenceValue').textContent = `${confidence.toFixed(2)}%`;
@@ -433,11 +433,11 @@
             console.log('Alert condition not met: hiding alert bar');
             alertBar.classList.add('hidden');
         }
-                
-        // تحديث الملخص
+
+        // Update summary
         document.getElementById('summaryResult').textContent = data.summary || (lang === 'ar' ? 'لا تتوفر معلومات كافية' : 'No sufficient information');
-        
-        // تحديث الأحداث
+
+        // Update events
         const eventsList = document.getElementById('eventsList');
         eventsList.innerHTML = '';
         
@@ -470,7 +470,7 @@
         }
     }
 
-    // محاكاة شريط التقدم أثناء التحليل
+    // Simulate progress bar during analysis
     function simulateAnalysisProgress(progressBar) {
         let progress = 0;
         const interval = setInterval(() => {
@@ -483,7 +483,7 @@
         }, 300);
     }
 
-    // إعادة تعيين واجهة المستخدم عند تحميل الصفحة
+    // Reset user interface on page load
     document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('startBtn').classList.remove('hidden');
         document.getElementById('stopBtn').classList.add('hidden');
