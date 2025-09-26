@@ -1,0 +1,451 @@
+{
+  "name": "My workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "a8a33bc7-7e97-49ec-a726-a1eb337d7a3f",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -448,
+        -80
+      ],
+      "id": "5608fc6e-dd44-4641-ba11-9de92a374b5f",
+      "name": "Webhook",
+      "webhookId": "a8a33bc7-7e97-49ec-a726-a1eb337d7a3f"
+    },
+    {
+      "parameters": {
+        "sendTo": "ahmeddawood0001@gmail.com",
+        "subject": "={{ $json.subject }}",
+        "emailType": "text",
+        "message": "={{ $json.message }}",
+        "options": {
+          "appendAttribution": false,
+          "attachmentsUi": {
+            "attachmentsBinary": [
+              {
+                "property": "pdf_data"
+              }
+            ]
+          }
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        624,
+        0
+      ],
+      "id": "f75a5533-ed3f-4539-8d1b-f7b1333a2470",
+      "name": "Send a message",
+      "webhookId": "b40930df-97a5-4415-be4f-287671515921",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "RKoIzBk2frYRK0Kz",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.body.predicted_label }}\n{{ $json.body.summary }}",
+        "options": {
+          "systemMessage": "=You are an assistant that writes short professional alert emails.\n\nUse the following data to write a concise email notifying about an alert. \nInclude the Predicted Label in the first line after the alert emoji.\nDo NOT include recommended actions or instructions.\n\nPredicted Label: {{ $json.body.predicted_label }}\nSummary: {{ $json.body.summary }}\n\nStart the email body with the alert emoji 🚨 and clearly state that this is an alert notification. \nEnd the email with a polite closing.\nAlways use \"Echolens\" as the organization name at the end. \nOutput only the email body text.\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        -96,
+        0
+      ],
+      "id": "2bcbb344-f41d-46ab-bb37-b91ae37e505a",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": "openai/gpt-oss-120b",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        -144,
+        208
+      ],
+      "id": "9f853d49-82e3-4715-a641-8c6298bbd458",
+      "name": "Groq Chat Model",
+      "credentials": {
+        "groqApi": {
+          "id": "31aQcgdyy24GbMGv",
+          "name": "Groq account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "pdf",
+        "binaryPropertyName": "pdf_data",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        48,
+        -240
+      ],
+      "id": "897e2fed-23f2-40e9-ae6f-94ab59c4b229",
+      "name": "Extract from File"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1kqKU8p9xTZSEG0-hcIOn81dUwxJe_1_aCBzVGw6143A",
+          "mode": "list",
+          "cachedResultName": "Echolens Data",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1kqKU8p9xTZSEG0-hcIOn81dUwxJe_1_aCBzVGw6143A/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1kqKU8p9xTZSEG0-hcIOn81dUwxJe_1_aCBzVGw6143A/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Report Title": "={{ $json['Report Title'] }}",
+            "Analyzed On": "={{ $json['Analyzed On'] }}",
+            "Video Duration": "={{ $json['Video Duration'] }}",
+            "Predicted Event": "={{ $json['Predicted Event'] }}",
+            "Confidence (%)": "={{ $json['Confidence (%)'] }}",
+            "Event Summary": "={{ $json['Event Summary'] }}",
+            "Number of Events": "={{ $json['Number of Events'] }}",
+            "Event Start Times": "={{ $json['Event Start Times'] }}",
+            "Event End Times": "={{ $json['Event End Times'] }}",
+            "Event Start Frames": "={{ $json['Event Start Frames'] }}",
+            "Event End Frames": "={{ $json['Event End Frames'] }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Report Title",
+              "displayName": "Report Title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Analyzed On",
+              "displayName": "Analyzed On",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Video Duration",
+              "displayName": "Video Duration",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Predicted Event",
+              "displayName": "Predicted Event",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Confidence (%)",
+              "displayName": "Confidence (%)",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Event Summary",
+              "displayName": "Event Summary",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Number of Events",
+              "displayName": "Number of Events",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Event Start Times",
+              "displayName": "Event Start Times",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Event End Times",
+              "displayName": "Event End Times",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Event Start Frames",
+              "displayName": "Event Start Frames",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Event End Frames",
+              "displayName": "Event End Frames",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        688,
+        -240
+      ],
+      "id": "976af7b8-34f6-4f35-aefa-06e5ffdbb250",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "Wa6g8DNzPwM3vc6i",
+          "name": "Google Sheets account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// جلب الـ PDF من Webhook\nconst pdfData = $input.first().json.body.pdf_data;\n\n// إعادة البيانات كـ JSON و PDF binary\nreturn [\n  {\n    binary: {\n      pdf_data: {\n        data: pdfData, // Base64 من الـ API\n        mimeType: \"application/pdf\",\n        fileName: \"report.pdf\"\n      }\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -192,
+        -240
+      ],
+      "id": "dc0de67a-626c-4dde-8728-c7d4767ccc05",
+      "name": "Convert to Binary File"
+    },
+    {
+      "parameters": {
+        "jsCode": "return [\n  {\n    json: {\n      full_text: $json.text\n    }\n  }\n];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        256,
+        -240
+      ],
+      "id": "724d5d27-e5e6-480d-9f84-c42e404c8782",
+      "name": "Display Full File"
+    },
+    {
+      "parameters": {
+        "jsCode": "// جلب النص الكامل\nconst text = $json.full_text;\n\n// فصل كل سطر\nconst lines = text.split(\"\\n\").map(l => l.trim()).filter(l => l !== \"\");\n\n// جمع البيانات الثابتة\nconst reportTitle = lines[0]; // EchoLens Video Analysis Report\nconst analyzedOnLine = lines.find(l => l.startsWith(\"Analyzed on:\"));\nconst analyzedOn = analyzedOnLine?.replace(\"Analyzed on:\", \"\").trim();\n\nconst durationLine = lines.find(l => l.startsWith(\"Video Duration:\"));\nconst videoDuration = durationLine?.replace(\"Video Duration:\", \"\").trim();\n\nconst predictedLine = lines.find(l => l.startsWith(\"Predicted Event:\"));\nconst predictedEvent = predictedLine?.replace(\"Predicted Event:\", \"\").trim();\n\nconst confidenceLine = lines.find(l => l.startsWith(\"Confidence:\"));\nconst confidence = confidenceLine?.replace(\"Confidence:\", \"\").replace(\"%\",\"\").trim();\n\nconst summaryIndex = lines.findIndex(l => l.startsWith(\"Event Summary:\"));\nconst detectedIndex = lines.findIndex(l => l.startsWith(\"Detected Events\"));\n\nconst eventSummary = summaryIndex !== -1 && detectedIndex !== -1 \n    ? lines.slice(summaryIndex, detectedIndex).join(\" \").replace(\"Event Summary:\", \"\").trim()\n    : \"\";\n\n// استخراج الأحداث\nconst eventLines = lines.slice(detectedIndex + 1); // بعد Detected Events\nlet eventStartTimes = [];\nlet eventEndTimes = [];\nlet eventStartFrames = [];\nlet eventEndFrames = [];\n\neventLines.forEach(line => {\n    const parts = line.split(/\\s+/);\n    // تحقق من ان السطر يمثل Event\n    if (parts[0].startsWith(\"Event\") && parts.length >= 5) {\n        eventStartTimes.push(parts[1]);\n        eventEndTimes.push(parts[2]);\n        eventStartFrames.push(parts[3]);\n        eventEndFrames.push(parts[4]);\n    }\n});\n\nreturn [{\n    json: {\n        \"Report Title\": reportTitle,\n        \"Analyzed On\": analyzedOn,\n        \"Video Duration\": videoDuration,\n        \"Predicted Event\": predictedEvent,\n        \"Confidence (%)\": confidence,\n        \"Event Summary\": eventSummary,\n        \"Number of Events\": eventStartTimes.length,\n        \"Event Start Times\": eventStartTimes.join(\",\"),\n        \"Event End Times\": eventEndTimes.join(\",\"),\n        \"Event Start Frames\": eventStartFrames.join(\",\"),\n        \"Event End Frames\": eventEndFrames.join(\",\")\n    }\n}];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        464,
+        -240
+      ],
+      "id": "02f9bb38-60ea-4c16-aa34-297614edb406",
+      "name": "Extract Columns from File"
+    },
+    {
+      "parameters": {
+        "jsCode": "// جلب النص من الـ input\nconst output = $input.first().json.output ?? \"\";\n\n// فصل السطور وتنظيفها\nconst lines = output.split(\"\\n\").filter(line => line.trim() !== \"\");\n\n// استخراج العنوان والرسالة\nconst subject = lines.length > 0 ? lines[0].replace(/\\*\\*/g, \"\") : \"🚨 Alert Notification – Alert\";\nconst message = lines.slice(1).join(\"\\n\").trim();\n\n// جلب الـ PDF من Webhook\nconst pdfData = $('Webhook').first().json.body.pdf_data;\n\n// إعادة البيانات كـ JSON و PDF binary\nreturn [\n  {\n    json: {\n      subject: subject,\n      message: message\n    },\n    binary: {\n      pdf_data: {\n        data: pdfData, // Base64 من الـ API\n        mimeType: \"application/pdf\",\n        fileName: \"report.pdf\"\n      }\n    }\n  }\n];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        352,
+        0
+      ],
+      "id": "2b0f0ae1-00ed-4738-87a1-ffebff4766fe",
+      "name": "Split messages and convert to Binary Files"
+    },
+    {
+      "parameters": {
+        "content": "\n",
+        "height": 624,
+        "width": 1536,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -576,
+        -288
+      ],
+      "id": "ca049582-110f-48e2-8e35-5876e5f30f08",
+      "name": "Sticky Note"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Convert to Binary File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Split messages and convert to Binary Files",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File": {
+      "main": [
+        [
+          {
+            "node": "Display Full File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append row in sheet": {
+      "main": [
+        []
+      ]
+    },
+    "Convert to Binary File": {
+      "main": [
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Display Full File": {
+      "main": [
+        [
+          {
+            "node": "Extract Columns from File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Columns from File": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split messages and convert to Binary Files": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "00482821-cd97-4b1c-a898-d4c91f345eb1",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "cd1fb7396d8a2d29b34fbb825521810135fd62c908bb5a0a9f6900b04a144d22"
+  },
+  "id": "kSHhwbLSAq6LpiGF",
+  "tags": []
+}
