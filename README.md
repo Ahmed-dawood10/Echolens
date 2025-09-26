@@ -96,10 +96,11 @@ Developed by **Echolens Team**
 
 
 ## 📸 Screenshots  
-![Dashboard Screenshot](static/dashboard.png)  
+![Dashboard Screenshot](Demo2.png)  
+![Dashboard Screenshot](Demo1.png)  
 
 ## 🔄 Workflow Diagram  
-![Workflow](static/workflow.png)  
+![Workflow](workflow.png)  
 
 
 
