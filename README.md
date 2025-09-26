@@ -25,6 +25,7 @@ It integrates with **n8n workflows** to send automated alerts via Gmail and log 
 ├── yolov12n.pt                  # Pre-trained YOLO model
 └── README.md                    # Documentation
 
+```
 
 ## ⚙️ Installation  
 
@@ -32,5 +33,19 @@ It integrates with **n8n workflows** to send automated alerts via Gmail and log 
 ```bash
 git clone https://github.com/Ahmed-dawood10/Echolens.git
 cd Echolens
+```
+
+### 2️⃣ Create Virtual Environment & Install Dependencies
+python -m venv venv
+source venv/bin/activate   # On Linux/Mac
+venv\Scripts\activate      # On Windows
+
+pip install -r requirements.txt
+
+
+### 3️⃣ Run Flask App
+**By default, the app runs on:
+👉 http://127.0.0.1:5000/**
+
 
 
