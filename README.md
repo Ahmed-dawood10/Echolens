@@ -37,7 +37,9 @@ cd Echolens
 
 ### 2️⃣ Create Virtual Environment & Install Dependencies
 python -m venv venv
+
 source venv/bin/activate   # On Linux/Mac
+
 venv\Scripts\activate      # On Windows
 
 pip install -r requirements.txt
@@ -46,6 +48,56 @@ pip install -r requirements.txt
 ### 3️⃣ Run Flask App
 **By default, the app runs on:
 👉 http://127.0.0.1:5000/**
+
+
+## 🔄 Workflow Integration (n8n)  
+
+1. Import the workflow file into your n8n instance:  
+   - File: **`workflow(alert+storing).json`**  
+
+2. Make sure the workflow is **Active** on your n8n server or local machine.  
+
+3. Update the **Webhook URL** in `analysis.html and live.html` to match your n8n webhook endpoint:  
+   ```python
+   WEBHOOK_URL = "http://localhost:5678/webhook/echolens-alert"
+
+Replace localhost with your server’s IP/domain if deployed.
+
+The workflow will:
+
+Send email alerts via Gmail for detected incidents.
+
+Store event metadata in Google Sheets automatically.
+
+
+
+## 🧪 Usage  
+
+- **Upload Mode** → Upload a recorded surveillance video via the web dashboard.  
+- **Live Mode** → Connect a real-time stream (e.g., RTSP feed from camera).  
+
+The system will:  
+1. Detect objects, track movements, and identify abnormal events.  
+2. Generate descriptive incident reports.  
+3. Trigger alerts and log data via the n8n workflow.
+
+
+## 🎯 Future Enhancements  
+- Edge deployment directly on cameras.  
+- Cross-camera unified tracking with unique IDs.  
+- Integration with enterprise VMS & smart city platforms.  
+
+
+
+## 👤 Author  
+Developed by **Echolens Team** 
+
+
+## 📸 Screenshots  
+![Dashboard Screenshot](static/dashboard.png)  
+
+## 🔄 Workflow Diagram  
+![Workflow](static/workflow.png)  
 
 
 
