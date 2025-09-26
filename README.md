@@ -91,6 +91,7 @@ The system will:
 
 ## 👤 Author  
 Developed by **Echolens Team** 
+📧 Contact: ahmeddawood0001@gmail.com
 
 
 ## 📸 Screenshots  
