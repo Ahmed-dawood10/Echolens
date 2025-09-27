@@ -38,13 +38,18 @@ cd Echolens
 ### 2️⃣ Create Virtual Environment & Install Dependencies
 # Option 1: Using venv (default)
 python -m venv venv
+
 source venv/bin/activate   # Linux/Mac
+
 venv\Scripts\activate      # Windows
+
 pip install -r requirements.txt
 
 # Option 2: Using conda
 conda create -n myenv python=3.11
+
 conda activate myenv
+
 pip install -r requirements.txt
 
 
