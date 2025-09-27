@@ -46,7 +46,7 @@ venv\Scripts\activate      # Windows
 pip install -r requirements.txt
 
 # Option 2: Using conda
-conda create -n myenv python=3.11
+conda create -n myenv python=3.9
 
 conda activate myenv
 
