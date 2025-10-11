@@ -1,6 +1,7 @@
 # 📹 ECHOLENS  
 Smart AI-Powered Surveillance System – Real-time Event Detection & Reporting  
 
+Team member : Ahmed Dawood - Amr Khaled 
 ---
 
 ## 🚀 Overview  
@@ -101,7 +102,8 @@ The system will:
 ## 👤 Author  
 Developed by **Echolens Team** 
 
-📧 Contact: ahmeddawood0001@gmail.com
+📧 Contact: ahmeddawood0001@gmail.com 
+             amrofficalwork2025@gmail.com
 
 
 ## 📸 Screenshots  
